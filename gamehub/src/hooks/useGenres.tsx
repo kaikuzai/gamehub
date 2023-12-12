@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
+import useData from "./useData";
 
 export interface Genre {
   id: number;
@@ -9,31 +10,6 @@ export interface Genre {
   image_background: string;
 }
 
-interface FetchGenreResponse {
-  count: number;
-  results: Genre[];
-}
-
-const useGenres = () => {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [error, setError] = useState<AxiosError>();
-  const [isLoading, setIsLoading] = useState<Boolean>(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    apiClient
-      .get<FetchGenreResponse>("/genres")
-      .then((res) => {
-        setGenres(res.data.results);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-        setIsLoading(false);
-      });
-  }, []);
-
-  return { genres, error, isLoading };
-};
+const useGenres = () => useData<Genre>("/genres");
 
 export default useGenres;
